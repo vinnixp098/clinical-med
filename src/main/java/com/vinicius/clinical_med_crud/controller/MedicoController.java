@@ -5,10 +5,10 @@ import com.vinicius.clinical_med_crud.business.Medico.Medico;
 import com.vinicius.clinical_med_crud.business.Medico.DadosCadastroMedico;
 import com.vinicius.clinical_med_crud.business.Medico.MedicoRepository;
 import jakarta.validation.Valid;
-import javafx.scene.control.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +29,8 @@ public class MedicoController {
     }
 
     @GetMapping
-    public Page<DadosListagemMedico> listarMedicos(Pageable paginacao){
+    public Page<DadosListagemMedico> listarMedicos(@PageableDefault(size = 10, sort= {"nome"}) Pageable paginacao){
+        // o @pageableDefault serve para padronizar valores de ordenação e paginacao
         return repository.findAll(paginacao).map(DadosListagemMedico::new);
     }
 }

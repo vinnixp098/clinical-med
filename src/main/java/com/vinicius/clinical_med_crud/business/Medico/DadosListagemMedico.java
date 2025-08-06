@@ -5,7 +5,7 @@ public record DadosListagemMedico(
         String nome,
         String email,
         String crm,
-        Especialidade especialided
+        Especialidade especialidade
 
 ) {
     public DadosListagemMedico(Medico dados){
