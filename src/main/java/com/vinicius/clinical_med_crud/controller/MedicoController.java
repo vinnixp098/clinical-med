@@ -1,9 +1,6 @@
 package com.vinicius.clinical_med_crud.controller;
 
-import com.vinicius.clinical_med_crud.business.Medico.DadosListagemMedico;
-import com.vinicius.clinical_med_crud.business.Medico.Medico;
-import com.vinicius.clinical_med_crud.business.Medico.DadosCadastroMedico;
-import com.vinicius.clinical_med_crud.business.Medico.MedicoRepository;
+import com.vinicius.clinical_med_crud.business.Medico.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,6 +28,20 @@ public class MedicoController {
     @GetMapping
     public Page<DadosListagemMedico> listarMedicos(@PageableDefault(size = 10, sort= {"nome"}) Pageable paginacao){
         // o @pageableDefault serve para padronizar valores de ordenação e paginacao
-        return repository.findAll(paginacao).map(DadosListagemMedico::new);
+        return repository.findAllByAtivoTrue(paginacao).map(DadosListagemMedico::new);
+    }
+
+    @PutMapping
+    @Transactional
+    public void atualizarMedico(@RequestBody @Valid DadosEdicaoMedico dados){
+        var medico = repository.getReferenceById(dados.id());
+        medico.atualizarDados(dados);
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void deletarMedico(@PathVariable Long id){
+        var medico = repository.getReferenceById(id);
+        medico.excluir(id);
     }
 }

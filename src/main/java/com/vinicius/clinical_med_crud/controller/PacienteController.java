@@ -1,10 +1,7 @@
 package com.vinicius.clinical_med_crud.controller;
 
 import com.vinicius.clinical_med_crud.business.Medico.DadosListagemMedico;
-import com.vinicius.clinical_med_crud.business.Paciente.DadosCadastroPaciente;
-import com.vinicius.clinical_med_crud.business.Paciente.DadosListagemPacientes;
-import com.vinicius.clinical_med_crud.business.Paciente.Paciente;
-import com.vinicius.clinical_med_crud.business.Paciente.PacienteRepository;
+import com.vinicius.clinical_med_crud.business.Paciente.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +26,21 @@ public class PacienteController {
     }
 
     @GetMapping
-    public Page<DadosListagemPacientes> listarMedicos(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao){
-        return repository.findAll(paginacao).map(DadosListagemPacientes::new);
+    public Page<DadosListagemPacientes> listar(@PageableDefault(page = 0, size = 10, sort = { "nome" }) Pageable paginacao) {
+        return repository.findAllByAtivoTrue(paginacao).map(DadosListagemPacientes::new);
+    }
+
+    @PutMapping
+    @Transactional
+    public void atualizar(@RequestBody @Valid DadosAtualizacaoPaciente dados) {
+        var paciente = repository.getReferenceById(dados.id());
+        paciente.atualizarInformacoes(dados);
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void remover(@PathVariable Long id) {
+        var paciente = repository.getReferenceById(id);
+        paciente.inativar();
     }
 }
