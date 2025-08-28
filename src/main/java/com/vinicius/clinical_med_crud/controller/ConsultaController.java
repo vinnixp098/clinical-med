@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +22,15 @@ public class ConsultaController {
 
   @PostMapping
   @Transactional
-  public void CadastrarConsulta(@RequestBody @Valid DadosCadastroConsulta dados){
-    repository.save(new Consulta(dados));
+  public ResponseEntity<?> CadastrarConsulta(@RequestBody DadosCadastroConsulta dados){
+      var consultaExistente = repository.findByDataConsultaAndCrm(dados.dataConsulta(), dados.crm());
+
+      if(consultaExistente.isEmpty()){
+          repository.save(new Consulta(dados));
+          return ResponseEntity.ok().body("Consulta marcada com sucesso!");
+      } else{
+          return ResponseEntity.ok().body("Já existe uma consulta marcada para a data selecionada!");
+      }
   }
 
   @GetMapping
@@ -38,10 +46,16 @@ public class ConsultaController {
 //    medico.atualizarDados(dados);
 //  }
 //
-//  @DeleteMapping("/{id}")
-//  @Transactional
-//  public void deletarMedico(@PathVariable Long id){
-//    var medico = repository.getReferenceById(id);
-//    medico.excluir(id);
-//  }
+  @DeleteMapping("/{id}")
+  @Transactional
+  public ResponseEntity<?> deletarMedico(@PathVariable Long id){
+      var consultaExistente = repository.findById(id);
+      if(consultaExistente.isPresent()){
+          repository.deleteById(id);
+          return ResponseEntity.ok().body("Consulta deletada com sucesso!");
+      } else{
+          return ResponseEntity.notFound().build();
+      }
+
+  }
 }

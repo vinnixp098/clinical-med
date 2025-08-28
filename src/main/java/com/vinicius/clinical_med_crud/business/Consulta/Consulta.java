@@ -65,4 +65,7 @@ public class Consulta {
     this.endereco = consulta.getEndereco();
   }
 
+    public void excluir(Long id) {
+
+    }
 }
