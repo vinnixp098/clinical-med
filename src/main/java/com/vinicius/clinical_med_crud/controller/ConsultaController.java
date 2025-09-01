@@ -29,7 +29,7 @@ public class ConsultaController {
           repository.save(new Consulta(dados));
           return ResponseEntity.ok().body("Consulta marcada com sucesso!");
       } else{
-          return ResponseEntity.ok().body("Já existe uma consulta marcada para a data selecionada!");
+          return ResponseEntity.badRequest().body("Já existe uma consulta marcada para a data selecionada!");
       }
   }
 

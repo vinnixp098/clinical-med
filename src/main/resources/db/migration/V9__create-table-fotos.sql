@@ -1,0 +1,5 @@
+CREATE TABLE fotos (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nome_arquivo VARCHAR(255) NOT NULL,
+    dados LONGBLOB NOT NULL
+);
